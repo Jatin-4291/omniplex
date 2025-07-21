@@ -38,7 +38,7 @@ const Sidebar = () => {
   const [isClosing, setIsClosing] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(width >= 512);
   const sidebarRef = useRef<HTMLDivElement>(null);
-
+  const [isPremium, setIsPremium] = useState(false);
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);
     handleResize();
@@ -46,6 +46,10 @@ const Sidebar = () => {
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  useEffect(() => {
+    const premium = localStorage.getItem("isPremium") === "true";
+    setIsPremium(premium);
   }, []);
 
   useEffect(() => {
@@ -102,6 +106,9 @@ const Sidebar = () => {
   const handleNewChat = () => {
     router.push("/");
   };
+  const handleBuyPremium = () => {
+    router.push("/buy");
+  };
 
   return (
     <>
@@ -123,6 +130,15 @@ const Sidebar = () => {
             className={styles.titleButtonIcon}
           />
           <p className={styles.titleButtonText}>New Chat</p>
+        </div>
+        <div
+          className={styles.titleButton}
+          style={{ opacity: isSidebarOpen ? 0 : 1 }}
+          onClick={handleBuyPremium}
+        >
+          <p className={styles.titleButtonText}>
+            {isPremium ? "Premium 🥳" : "Buy Premium-$10 💰"}
+          </p>
         </div>
       </div>
       {isSidebarOpen && (

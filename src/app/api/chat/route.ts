@@ -4,13 +4,14 @@ import { OpenAIStream, StreamingTextResponse } from "ai";
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
+console.log(openai);
 
 export const runtime = "edge";
 
 export async function POST(req: Request) {
   const {
     messages,
-    model,
+    model = "gpt-3.5-turbo",
     temperature,
     max_tokens,
     top_p,
@@ -29,6 +30,6 @@ export async function POST(req: Request) {
     messages: messages,
   });
 
-  const stream = OpenAIStream(response);
+  const stream = OpenAIStream(response as any);
   return new StreamingTextResponse(stream);
 }

@@ -1,6 +1,5 @@
+import { log } from "console";
 import OpenAI from "openai";
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function POST(req: Request) {
   if (req.method !== "POST") {
@@ -11,8 +10,12 @@ export async function POST(req: Request) {
       { status: 405 }
     );
   }
+  console.log("OPENAI KEY", process.env.OPENAI_API_KEY);
+
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   const messages = await req.json();
+  log("Received messages:", messages);
 
   const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
     {
@@ -103,6 +106,8 @@ export async function POST(req: Request) {
 
     // Process the tool calls if present
     const firstToolCall = toolCalls[0];
+    console.log(firstToolCall);
+
     const modeAndArguments =
       Object.keys(firstToolCall.function.arguments).length === 2
         ? ""
