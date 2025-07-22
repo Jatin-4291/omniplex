@@ -2,6 +2,10 @@ import { log } from "console";
 import OpenAI from "openai";
 
 export async function POST(req: Request) {
+  if (!process.env.OPENAI_API_KEY) {
+    return new Response("Skipped due to missing API key", { status: 200 });
+  }
+
   if (req.method !== "POST") {
     return new Response(
       JSON.stringify({

@@ -1,14 +1,17 @@
-import OpenAI from "openai";
 import { OpenAIStream, StreamingTextResponse } from "ai";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-console.log(openai);
+import OpenAI from "openai";
 
 export const runtime = "edge";
 
 export async function POST(req: Request) {
+  if (!process.env.OPENAI_API_KEY) {
+    return new Response("Skipped due to missing API key", { status: 200 });
+  }
+
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+
   const {
     messages,
     model = "gpt-3.5-turbo",
@@ -21,13 +24,13 @@ export async function POST(req: Request) {
 
   const response = await openai.chat.completions.create({
     stream: true,
-    model: model,
-    temperature: temperature,
-    max_tokens: max_tokens,
-    top_p: top_p,
-    frequency_penalty: frequency_penalty,
-    presence_penalty: presence_penalty,
-    messages: messages,
+    model,
+    temperature,
+    max_tokens,
+    top_p,
+    frequency_penalty,
+    presence_penalty,
+    messages,
   });
 
   const stream = OpenAIStream(response as any);

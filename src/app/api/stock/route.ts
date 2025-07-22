@@ -4,6 +4,10 @@ const FINNHUB_API_KEY = process.env.FINNHUB_API_KEY;
 const ALPHA_VANTAGE_API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
 
 const fetchJSON = async (url: string) => {
+  if (!process.env.FINNHUB_API_KEY || !process.env.ALPHA_VANTAGE_API_KEY) {
+    return new Response("Skipped due to missing API key", { status: 200 });
+  }
+
   const response = await fetch(url);
   if (!response.ok) throw new Error(`Failed to fetch data from ${url}`);
   return response.json();

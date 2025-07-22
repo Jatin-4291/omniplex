@@ -6,6 +6,9 @@ const BING_SEARCH_URL = "https://api.bing.microsoft.com/v7.0/search";
 export const runtime = "edge";
 
 export async function GET(req: NextRequest) {
+  if (!BING_API_KEY) {
+    return new NextResponse("Skipped due to missing API key", { status: 200 });
+  }
   const { searchParams } = new URL(req.url);
   const q = searchParams.get("q");
 
