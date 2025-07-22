@@ -27,11 +27,12 @@ jobs:
 
       - name: Copy necessary files for deployment
         run: |
-          npm install
-          npm run build --if-present
-          npm run test --if-present
+          mkdir deploy
+          cp -r .next public package.json next.config.js deploy/
+          if [ -f ecosystem.config.js ]; then cp ecosystem.config.js deploy/; fi
+          if [ -f server.js ]; then cp server.js deploy/; fi
 
-      - name: Upload artifact for deployment job
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: nextjs-app
@@ -45,7 +46,8 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: node-app
+          name: nextjs-app
+          path: .
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -54,7 +56,7 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_AF80CD04B58D41899FCC4886835A61F8 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B9186CB6B7EA45EBBCD607D26D3F874F }}
 
-      - name: "Deploy to Azure Web App"
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: "Omniplix-jatin"
