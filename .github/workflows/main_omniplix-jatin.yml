@@ -28,8 +28,8 @@ jobs:
       - name: Copy necessary files for deployment
         run: |
           mkdir deploy
-          cp -r .next public package.json next.config.js deploy/
-          if [ -f ecosystem.config.mjs ]; then cp ecosystem.config.js deploy/; fi
+          cp -r .next public package.json next.config.mjs deploy/
+          if [ -f ecosystem.config.mjs ]; then cp ecosystem.config.mjs deploy/; fi
           if [ -f server.js ]; then cp server.js deploy/; fi
 
       - name: Upload artifact
