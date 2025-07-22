@@ -1,17 +1,12 @@
+// app/api/checkout/route.ts
+
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+
 export async function POST() {
   try {
-    const key = process.env.STRIPE_SECRET_KEY;
-    if (!key) {
-      return new NextResponse("Skipped due to missing API key", {
-        status: 200,
-      });
-    }
-
-    const stripe = new Stripe(key);
-
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
@@ -32,8 +27,11 @@ export async function POST() {
     });
 
     return NextResponse.json({ id: session.id });
-  } catch (err) {
-    console.error(err);
-    return new NextResponse("Stripe error", { status: 500 });
+  } catch (err: any) {
+    console.error("Stripe error:", err.message);
+    return NextResponse.json(
+      { error: "Stripe error", message: err.message },
+      { status: 500 }
+    );
   }
 }
