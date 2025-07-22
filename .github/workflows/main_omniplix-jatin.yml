@@ -5,7 +5,8 @@ on:
     branches:
       - main
   workflow_dispatch:
-  permissions:
+
+permissions:
   id-token: write
   contents: read
 
@@ -26,6 +27,9 @@ jobs:
         run: npm install
 
       - name: Build project
+        env:
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
         run: npm run build
 
       - name: Copy necessary files for deployment
